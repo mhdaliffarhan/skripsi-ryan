@@ -1,0 +1,192 @@
+/////////////////////////////////
+MENDAPATKAN KODE KECAMATAN - SLS
+---------------------------------
+SELECT sls.kode AS 'KODE SLS', sls.nama_x AS 'Nama SLS', desa.kode AS 'Kode Desa', desa.nama AS 'Desa', kecamatan.kode AS 'Kode Kecamatan', kecamatan.nama AS 'Kecamatan'
+FROM `sls`
+
+INNER JOIN desa ON sls.kode_desa = desa.kode AND sls.kode_kec = desa.kode_kec
+INNER JOIN kecamatan on desa.kode_kec = kecamatan.kode
+
+;
+
+/////////////////////////////////
+
+
+MENDAPATKAN KOSEKA BESERTA KECAMATAN
+---------------------------------
+SELECT koseka.nama AS "Koseka", kecamatan.nama AS "Kecamatan" FROM `koseka` 
+INNER JOIN kecamatan ON kecamatan.kode = koseka.id_kec
+WHERE id_kegiatan = "ST2023"
+ORDER BY id_kec ASC;
+
+/////////////////////////////////
+
+
+MENDAPATKAN DOKUMEN BESERTA NAMA WILAYAH DAN NAMA ORGANISASI LAPANGAN
+---------------------------------
+SELECT dokumen.kode_sls AS "Kode SLS", sls.nama_x AS 'SLS' , dokumen.kode_desa AS 'Kode Desa', desa.nama AS 'Desa' , dokumen.kode_kec AS 'Kode Kecamatan' ,kecamatan.nama AS 'Kecamatan', dokumen.id_ppl, ppl.nama AS 'PPL', dokumen.id_pml, pml.nama AS 'PML', dokumen.id_koseka ,koseka.nama AS 'Koseka'
+FROM `dokumen` 
+
+INNER JOIN kecamatan ON dokumen.kode_kec = kecamatan.kode
+INNER JOIN desa ON dokumen.kode_desa = desa.kode AND dokumen.kode_kec = desa.kode_kec
+INNER JOIN sls ON dokumen.kode_sls = sls.kode AND dokumen.kode_desa = sls.kode_desa AND dokumen.kode_kec = sls.kode_kec
+LEFT JOIN koseka ON dokumen.id_koseka = koseka.id
+LEFT JOIN pml ON dokumen.id_pml = pml.id 
+LEFT JOIN ppl ON dokumen.id_ppl = ppl.id
+
+WHERE dokumen.id_kegiatan = 'ST2023' AND koseka.id_kegiatan = 'ST2023' AND pml.id_kegiatan = 'ST2023' AND ppl.id_kegiatan = 'ST2023';
+
+/////////////////////////////////
+
+
+MIRIP SEPERTI YANG DIATAS, TP INI MENGAMBIL WAKTU EDCOD DAN ENTRI
+---------------------------------
+SELECT dokumen.kode_sls AS "Kode SLS", sls.nama_x AS 'SLS' , dokumen.kode_desa AS 'Kode Desa', desa.nama AS 'Desa' , dokumen.kode_kec AS 'Kode Kecamatan' ,kecamatan.nama AS 'Kecamatan', dokumen.id_ppl, ppl.nama AS 'PPL', dokumen.id_pml, pml.nama AS 'PML', dokumen.id_koseka ,koseka.nama AS 'Koseka', sensus.tgl_pengdok, sensus.tgl_entri, sensus.start_edcod, sensus.end_edcod
+FROM `dokumen` 
+
+INNER JOIN kecamatan ON dokumen.kode_kec = kecamatan.kode
+INNER JOIN desa ON dokumen.kode_desa = desa.kode AND dokumen.kode_kec = desa.kode_kec
+INNER JOIN sls ON dokumen.kode_sls = sls.kode AND dokumen.kode_desa = sls.kode_desa AND dokumen.kode_kec = sls.kode_kec
+LEFT JOIN koseka ON dokumen.id_koseka = koseka.id
+LEFT JOIN pml ON dokumen.id_pml = pml.id 
+LEFT JOIN ppl ON dokumen.id_ppl = ppl.id
+
+LEFT JOIN sensus ON dokumen.id_dok = sensus.id_dok
+
+WHERE dokumen.id_kegiatan = 'ST2023' AND koseka.id_kegiatan = 'ST2023' AND pml.id_kegiatan = 'ST2023' AND ppl.id_kegiatan = 'ST2023' AND sensus.id_kegiatan = 'ST2023';
+/////////////////////////////////
+
+
+MENDAPATKAN SEPERTI SPREADSHEET
+---------------------------------
+SELECT  dokumen.kode_kec AS 'Kode Kecamatan' ,kecamatan.nama AS 'Kecamatan',dokumen.kode_sls AS "Kode SLS",  dokumen.kode_desa AS 'Kode Desa', desa.nama AS 'Desa' , sls.nama_x AS 'SLS' , dokumen.id_ppl, ppl.nama AS 'PPL', dokumen.id_pml, pml.nama AS 'PML', dokumen.id_koseka ,koseka.nama AS 'Koseka', sensus.tgl_pengdok, sensus.tgl_entri, sensus.start_edcod, sensus.end_edcod
+FROM `dokumen` 
+
+INNER JOIN kecamatan ON dokumen.kode_kec = kecamatan.kode
+INNER JOIN desa ON dokumen.kode_desa = desa.kode AND dokumen.kode_kec = desa.kode_kec
+INNER JOIN sls ON dokumen.kode_sls = sls.kode AND dokumen.kode_desa = sls.kode_desa AND dokumen.kode_kec = sls.kode_kec
+LEFT JOIN koseka ON dokumen.id_koseka = koseka.id
+LEFT JOIN pml ON dokumen.id_pml = pml.id 
+LEFT JOIN ppl ON dokumen.id_ppl = ppl.id
+
+LEFT JOIN sensus ON dokumen.id_dok = sensus.id_dok
+
+WHERE dokumen.id_kegiatan = 'ST2023' AND koseka.id_kegiatan = 'ST2023' AND pml.id_kegiatan = 'ST2023' AND ppl.id_kegiatan = 'ST2023' AND sensus.id_kegiatan = 'ST2023';
+
+/////////////////////////////////
+
+---------------------------------
+MENDAPATKAN INFORMASI PENGOLAHAN SUATU KEGIATAN
+(Ganti id kegiatan, dan join dengan tabel ppl,pml dan koseka)
+SELECT dokumen.kode_kec, kecamatan.nama AS 'Kec', dokumen.kode_desa, desa.nama AS 'Desa' ,dokumen.kode_sls, sls.nama_x AS 'SLS', dokumen.id_ppl, dokumen.id_pml, dokumen.id_koseka, sensus.total_dokumen, sensus.tgl_pengdok, sensus.penerima_dok, sensus.status_pengdok, sensus.status_edcod, sensus.petugas_edcod, sensus.start_edcod, sensus.end_edcod, sensus.status_entri, sensus.petugas_entri, sensus.tgl_entri 
+FROM `dokumen` 
+
+INNER JOIN sensus on dokumen.id_kegiatan = sensus.id_kegiatan AND dokumen.id_dok = sensus.id_dok 
+INNER JOIN kecamatan on kecamatan.kode = dokumen.kode_kec 
+INNER JOIN desa on desa.kode = dokumen.kode_desa AND dokumen.kode_kec = desa.kode_kec 
+INNER JOIN sls on sls.kode = dokumen.kode_sls AND sls.kode_desa = dokumen.kode_desa AND sls.kode_kec = dokumen.kode_kec 
+
+WHERE dokumen.id_kegiatan = 'ST2023' AND sensus.id_kegiatan = 'ST2023' 
+
+ORDER BY dokumen.kode_kec, dokumen.kode_desa, dokumen.kode_sls ASC;
+
+/////////////////////////////////
+Mengubah tabel sensus untuk RB
+---------------------------------
+
+UPDATE `sensus` 
+SET `status_pengdok` = '1', `tgl_pengdok` = '2024-02-18 20:36:19', `penerima_dok` = 'opss3'
+
+WHERE `sensus`.`id_kegiatan` = 'ST2023' AND `sensus`.`id_dok` = '1';
+
+/////////////////////////////////
+
+
+MENDAPATKAN PROGRES PETUGAS
+---------------------------------
+SELECT penerima_dok, COUNT(penerima_dok) as 'TOTAL'
+FROM survei
+WHERE id_kegiatan = 'Sakernas2020'
+GROUP BY 
+penerima_dok;
+/////////////////////////////////
+
+
+MENAMBAHKAN MITRA EDITING/CODING
+---------------------------------
+INSERT INTO `mitra` (`id`, `nama`, `status`, `start_contract`, `end_contract`) VALUES (NULL, 'Benedict Tan', 'Entri', '2024-04-25', '2025-01-31');
+
+
+/////////////////////////////////
+
+MENGAMBIL FREKUENSI PER BULAN, PER MINGGU (DIGUNAKAN UNTUK GRAPH)
+---------------------------------
+SELECT 
+    'tgl_pengdok' AS jenis_data,
+    YEAR(tgl_pengdok) AS tahun,
+    MONTH(tgl_pengdok) AS bulan,
+    CASE
+        WHEN DAYOFMONTH(tgl_pengdok) <= 7 THEN 'Minggu ke-1'
+        WHEN DAYOFMONTH(tgl_pengdok) <= 14 THEN 'Minggu ke-2'
+        WHEN DAYOFMONTH(tgl_pengdok) <= 21 THEN 'Minggu ke-3'
+        ELSE 'Minggu ke-4'
+    END AS minggu,
+    COUNT(*) AS frekuensi
+FROM 
+    sensus
+WHERE 
+    tgl_pengdok IS NOT NULL AND id_kegiatan = 'ST2023'
+GROUP BY 
+    jenis_data, tahun, bulan, minggu
+
+UNION ALL
+
+SELECT 
+    'tgl_edcod' AS jenis_data,
+    YEAR(tgl_edcod) AS tahun,
+    MONTH(tgl_edcod) AS bulan,
+    CASE
+        WHEN DAYOFMONTH(tgl_edcod) <= 7 THEN 'Minggu ke-1'
+        WHEN DAYOFMONTH(tgl_edcod) <= 14 THEN 'Minggu ke-2'
+        WHEN DAYOFMONTH(tgl_edcod) <= 21 THEN 'Minggu ke-3'
+        ELSE 'Minggu ke-4'
+    END AS minggu,
+    COUNT(*) AS frekuensi
+FROM 
+    sensus
+WHERE 
+    tgl_edcod IS NOT NULL AND id_kegiatan = 'ST2023'
+GROUP BY 
+    jenis_data, tahun, bulan, minggu
+
+
+UNION ALL
+
+SELECT 
+    'tgl_entri' AS jenis_data,
+    YEAR(tgl_entri) AS tahun,
+    MONTH(tgl_entri) AS bulan,
+    CASE
+        WHEN DAYOFMONTH(tgl_entri) <= 7 THEN 'Minggu ke-1'
+        WHEN DAYOFMONTH(tgl_entri) <= 14 THEN 'Minggu ke-2'
+        WHEN DAYOFMONTH(tgl_entri) <= 21 THEN 'Minggu ke-3'
+        ELSE 'Minggu ke-4'
+    END AS minggu,
+    COUNT(*) AS frekuensi
+FROM 
+    sensus
+WHERE 
+    tgl_entri IS NOT NULL AND id_kegiatan = 'ST2023'
+GROUP BY 
+    jenis_data, tahun, bulan, minggu;
+
+
+/////////////////////////////////
+
+
+SELECT sls.kode AS 'kode_sls', sls.nama_x AS 'SLS', desa.kode AS 
+'kode_desa', desa.nama AS 'Desa', kecamatan.kode AS 'kode_kec', 
+kecamatan.nama AS 'Kec' FROM `sls` 
+
+INNER JOIN desa ON sls.kode_desa = desa.kode AND sls.kode_kec = desa.kode_kec 
+INNER JOIN kecamatan on sls.kode_kec = kecamatan.kode ORDER BY kecamatan.kode, desa.kode, sls.kode ASC ;
